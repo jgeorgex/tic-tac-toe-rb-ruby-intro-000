@@ -136,3 +136,7 @@ describe './lib/tic_tac_toe.rb' do
     end
   end
 end
+
+def play(board)
+  input = gets
+end

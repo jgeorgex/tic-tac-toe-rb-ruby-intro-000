@@ -257,3 +257,106 @@ describe './lib/tic_tac_toe.rb' do
     end
   end
 end
+
+WIN_COMBINATIONS = [
+  [0,1,2], # Top
+  [3,4,5], # Middle horizontal
+  [6,7,8], # Bottom
+  [0,3,6], # Left
+  [1,4,7], # Middle vertical
+  [2,5,8], # Right
+  [0,4,8], # Right Diagonal
+  [2,4,6]  # Left Diagonal
+]
+
+def display_board(board)
+  puts " #{board[0]} | #{board[1]} | #{board[2]} "
+  puts "-----------"
+  puts " #{board[3]} | #{board[4]} | #{board[5]} "
+  puts "-----------"
+  puts " #{board[6]} | #{board[7]} | #{board[8]} "
+end
+
+def input_to_index(user_input)
+  user_input.to_i-1
+end
+
+def move(board, index, token = "X")
+  board[index] = token
+end
+
+def position_taken?(board, index)
+  (board[index] == " " || board[index] == "" || board[index] == nil)?
+    false : true
+end
+
+def valid_move?(board, index)
+  index.between?(0, 8) && !position_taken?(board, index)
+end
+
+def turn(board)
+  puts "Please enter 1-9:"
+  user_input = gets.strip
+  index = input_to_index(user_input)
+  if valid_move?(board, index)
+    move(board, index)
+    display_board(board)
+  else
+    turn(board)
+  end
+end
+
+def turn_count(board)
+  counter= 0
+
+   board.each do|a| if a == "X"||a == "O"
+  counter+=1
+    end
+
+  end
+  return counter
+end
+
+def current_player(board)
+  if turn_count(board) % 2 == 0
+    return "X"
+else
+  return "O"
+end
+end
+
+def won?(board)
+  if board.all? { |place| place == ' ' }
+    return false
+  end
+  for combo in WIN_COMBINATIONS
+    if combo.all? { |index| board[index] == 'X' }
+      return combo
+    elsif combo.all? { |index| board[index] == 'O' }
+      return combo
+    end
+  end
+  false
+end
+
+def full?(board)
+  board.all? { |place| place != ' ' }
+end
+
+def draw?(board)
+  full?(board) && !won?(board)
+end
+
+def over?(board)
+  if won?(board)
+    return true
+  end
+
+  draw?(board) || full?(board)
+end
+
+def winner(board)
+  if won?(board)
+    board[won?(board)[0]]
+  end
+end
